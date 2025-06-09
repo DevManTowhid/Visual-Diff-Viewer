@@ -1,0 +1,6 @@
+Hello Worle!
+This is the updated file.
+Line 3 stays the same.
+Another shared line.
+Line 5 was added in the right.
+Final line of the right file.

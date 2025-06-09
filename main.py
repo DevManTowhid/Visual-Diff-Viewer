@@ -20,7 +20,7 @@ def open_right_file():
             right_text.insert(tk.END, content)
 
 
-            
+
 print("Text Diff Viewer Starting...")
 root = tk.Tk()
 root.geometry("1200x1200")
@@ -50,6 +50,7 @@ right_text.grid(row=1, column=1, padx=10, pady=5)
 tk.Button(root, text="Open Right File", command=open_right_file).grid(row=2, column=1, pady=5)
 
 
+tk.Button(root, text="Compare Files", command=lambda: None).grid(row=3, column=0, columnspan=2, pady=10)
 
 
 root.mainloop()

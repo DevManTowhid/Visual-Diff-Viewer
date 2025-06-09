@@ -1,0 +1,6 @@
+Hello World!
+This is the original file.
+Line 3 stays the same.
+Line 4 will be deleted.
+Another shared line.
+Final line of the left file.
