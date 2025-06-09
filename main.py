@@ -25,7 +25,22 @@ def export_diff_to_file():
             messagebox.showinfo("Export Successful", "Diff exported successfully!")
         except Exception as e:
             messagebox.showerror("Export Failed", str(e))
+def compare_words(left_line, right_line):
+    left_words = left_line.split()
+    right_words = right_line.split()
 
+    sm = difflib.SequenceMatcher(None, left_words, right_words)
+    for opcode, i1, i2, j1, j2 in sm.get_opcodes():
+        if opcode == 'equal':
+            left_text.insert(tk.END, " ".join(left_words[i1:i2]) + "\n")
+            right_text.insert(tk.END, " ".join(right_words[j1:j2]) + "\n")
+        elif opcode == 'replace':
+            left_text.insert(tk.END, " ".join(left_words[i1:i2]) + "\n", "deleted_word")
+            right_text.insert(tk.END, " ".join(right_words[j1:j2]) + "\n", "added_word")
+        elif opcode == 'delete':
+            left_text.insert(tk.END, " ".join(left_words[i1:i2]) + "\n", "deleted_word")
+        elif opcode == 'insert':
+            right_text.insert(tk.END, " ".join(right_words[j1:j2]) + "\n", "added_word")
 
 def clear_files():
     left_text.delete("1.0", tk.END)
@@ -121,5 +136,21 @@ tk.Button(root, text="Clear All", command=clear_files).grid(row=4, column=0, col
 
 tk.Button(root, text="Export Diff", command=export_diff_to_file).grid(row=5, column=0, columnspan=2, pady=5)
 
+
+
+
+
+def add_color_legend():
+    legend_frame = tk.Frame(root)
+    legend_frame.grid(row=6, column=0, columnspan=2, pady=10)
+
+    tk.Label(legend_frame, text="Legend:").grid(row=0, column=0, padx=5)
+
+    tk.Label(legend_frame, text="Deleted Line", bg="lightcoral", width=12).grid(row=0, column=1, padx=5)
+    tk.Label(legend_frame, text="Added Line", bg="lightgreen", width=12).grid(row=0, column=2, padx=5)
+    tk.Label(legend_frame, text="Deleted Word", bg="orange", width=12).grid(row=0, column=3, padx=5)
+    tk.Label(legend_frame, text="Added Word", bg="lightblue", width=12).grid(row=0, column=4, padx=5)
+
+add_color_legend()
 
 root.mainloop()
