@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import scrolledtext
 
+def open_left_file():
+    file_path = tk.filedialog.askopenfilename(title="Select Left File")
+
 
 print("Text Diff Viewer Starting...")
 root = tk.Tk()
