@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import scrolledtext
 from tkinter import filedialog
 import difflib
-
+from difflib import SequenceMatcher
 from tkinter import messagebox
 
 def export_diff_to_file():
@@ -34,27 +34,39 @@ def clear_files():
 
 
 def compare_files():
+    
+
     left_lines = left_text.get("1.0", tk.END).splitlines()
     right_lines = right_text.get("1.0", tk.END).splitlines()
 
-    diff = list(difflib.ndiff(left_lines, right_lines))
-
-    # Clear both boxes
+    # Clear boxes
     left_text.delete("1.0", tk.END)
     right_text.delete("1.0", tk.END)
 
-    for line in diff:
-        if line.startswith("- "):
-            left_text.insert(tk.END, line[2:] + "\n", "deleted")
-        elif line.startswith("+ "):
-            right_text.insert(tk.END, line[2:] + "\n", "added")
-        elif line.startswith("  "):
-            left_text.insert(tk.END, line[2:] + "\n")
-            right_text.insert(tk.END, line[2:] + "\n")
+    sm = difflib.SequenceMatcher(None, left_lines, right_lines)
+    for opcode, i1, i2, j1, j2 in sm.get_opcodes():
+        if opcode == 'equal':
+            for i in range(i1, i2):
+                left_text.insert(tk.END, left_lines[i] + "\n")
+            for j in range(j1, j2):
+                right_text.insert(tk.END, right_lines[j] + "\n")
+        elif opcode == 'replace':
+            for i in range(i1, i2):
+                left_line = left_lines[i]
+                right_line = right_lines[j1 + (i - i1)] if j1 + (i - i1) < j2 else ""
+                compare_words(left_line, right_line)
+        elif opcode == 'delete':
+            for i in range(i1, i2):
+                left_text.insert(tk.END, left_lines[i] + "\n", "deleted_line")
+        elif opcode == 'insert':
+            for j in range(j1, j2):
+                right_text.insert(tk.END, right_lines[j] + "\n", "added_line")
 
-    # Tag styles
-    left_text.tag_config("deleted", background="lightcoral")
-    right_text.tag_config("added", background="lightgreen")
+    # Tag configs
+    left_text.tag_config("deleted_word", background="orange")
+    right_text.tag_config("added_word", background="lightblue")
+    left_text.tag_config("deleted_line", background="lightcoral")
+    right_text.tag_config("added_line", background="lightgreen")
 
 def open_left_file():
     file_path = filedialog.askopenfilename(filetypes=[("Text Files", "*.txt")])
