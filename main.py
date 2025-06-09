@@ -5,11 +5,22 @@ from tkinter import filedialog
 
 def open_left_file():
     file_path = filedialog.askopenfilename(filetypes=[("Text Files", "*.txt")])
-
+    if file_path:
+        with open(file_path, "r", encoding="utf-8") as f:
+            content = f.read()
+            left_text.delete("1.0", tk.END)
+            left_text.insert(tk.END, content)
 
 def open_right_file():
     file_path = filedialog.askopenfilename(filetypes=[("Text Files", "*.txt")])
+    if file_path:
+        with open(file_path, "r", encoding="utf-8") as f:
+            content = f.read()
+            right_text.delete("1.0", tk.END)
+            right_text.insert(tk.END, content)
 
+
+            
 print("Text Diff Viewer Starting...")
 root = tk.Tk()
 root.geometry("1200x1200")
